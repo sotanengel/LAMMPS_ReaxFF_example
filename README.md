@@ -1,3 +1,5 @@
+English ver → [Here!!](https://github.com/sotanengel/LAMMPS_ReaxFF_example/blob/main/README_eng.md)
+
 # 概要
 このリポジトリはLAMMPSでReaxFFを行うときのサンプルファイルです。
 このリポジトリを使うと以下の系のシミュレーションを行うことができます。
@@ -17,7 +19,7 @@ Water Cell             |  Ethanol Cell
 # 実行方法
 ## 1.LAMMPSをダウンロードする
 [LAMMPSの公式ページ](https://www.lammps.org/)から、LAMMPSをダウンロードする。
-私が試した使用したバージョンは『LAMMPS Stable Release:29 Oct 2020』です。
+私が使用したバージョンは『LAMMPS Stable Release:29 Oct 2020』です。
 
 ## 2.LAMMPSのパッケージをコンパイルする
 具体的な構築方法は[このサイト](https://polymer-simulation-beginners.hatenablog.com/entry/2019/12/31/223235)を参照してください。
