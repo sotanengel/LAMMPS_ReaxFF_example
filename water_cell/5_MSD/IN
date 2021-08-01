@@ -1,0 +1,51 @@
+##/bin/sh
+
+#単位系などの設定
+units       real
+atom_style  full
+
+boundary    p p p #境界条件
+
+read_restart   CONFIG_4.RESTART #座標ファイルの読み込み
+
+#Reaxffポテンシャルの定義
+pair_style reax/c NULL
+pair_coeff * * CHON-2017_weak H O
+fix charge all qeq/reax 1 0.0 10.0 1.0e-6 reax/c
+
+#変数記述
+variable  dt    equal   0.1  #dtフェムト秒
+variable  N_tot_step equal   600000
+variable  N_pre_step equal   ${N_tot_step}-1
+variable  dNcfg equal   1000
+variable  dNout equal   100
+variable  Tini  equal   298
+variable  Tmass equal   ${dt}*100
+
+#系の制御
+thermo_style  multi
+thermo        ${dNout}
+fix     1 all nvt  temp ${Tini} ${Tini} ${Tmass} #熱浴設定(nvtは原子数、体積、温度)
+
+
+#タイムステップ
+timestep      ${dt}
+
+#解析
+group one_water id <= 3
+compute water_msd all msd com no average no
+fix water_msd_data all print ${dNout} "$(c_water_msd[1]),$(c_water_msd[2]),$(c_water_msd[3]),$(c_water_msd[4])"   screen no file water_msd.csv
+
+#出力ファイル
+dump 2 all atom ${dNcfg}   dump.daam
+
+
+#run pre-step(brefore output)
+run    ${N_pre_step}
+
+#run 1 step to get true neighbor binary data
+neigh_modify  delay 0  every 1  check no
+run    1
+
+write_data    CONFIG_5.DATA
+write_restart CONFIG_5.RESTART

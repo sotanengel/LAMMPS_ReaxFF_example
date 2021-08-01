@@ -1,0 +1,75 @@
+##/bin/sh
+
+#単位系などの設定
+units       real
+atom_style  full
+
+boundary    p p p #境界条件
+
+read_restart   CONFIG_2.RESTART #座標ファイルの読み込み
+
+#Reaxffポテンシャルの定義
+pair_style reax/c NULL
+pair_coeff * * CHON-2017_weak H O
+fix charge all qeq/reax 1 0.0 10.0 1.0e-6 reax/c
+
+#変数記述
+variable  dt    equal   0.1  #dtフェムト秒
+variable  N_tot_step equal   24500
+variable  N_pre_step equal   ${N_tot_step}-1
+variable  dNcfg equal   1000
+variable  dNout equal   500
+variable  Tini  equal   298
+variable  Tmass equal   ${dt}*100
+variable  Pini  equal   50.0
+variable  Pend  equal   1.0
+variable  Pmass equal   ${dt}*1000 #緩和時間
+
+#系の制御
+thermo_style  multi
+thermo        ${dNout}
+#fix     1 all nvt  temp ${Tini} ${Tini} ${Tmass} #熱浴設定(nvtは原子数、体積、温度）
+fix     1 all npt  temp ${Tini} ${Tini} ${Tmass} x ${Pini} ${Pend} ${Pmass} y ${Pini} ${Pend} ${Pmass} z ${Pini} ${Pend} ${Pmass} couple xyz
+
+
+#タイムステップ
+timestep      ${dt}
+
+#初期速度
+#velocity  all create ${Tini} 1 rot yes dist gaussian
+
+#出力する変数の制御
+compute reax all pair reax/c
+variable eb equal c_reax[1] #bond energy
+variable ea equal c_reax[2] #atom energy
+variable elp equal c_reax[3] #lone-pair energy
+variable emol equal c_reax[4] #molecule energy (always 0.0)
+variable ev equal c_reax[5] #valence angle energy
+variable epen equal c_reax[6] #double-bond valence angle penalty
+variable ecoa equal c_reax[7] #valence angle conjugation energy
+variable ehb equal c_reax[8] #hydrogen bond energy
+variable et equal c_reax[9] #torsion energy
+variable eco equal c_reax[10] #conjugation energy
+variable ew equal c_reax[11] #van der Waals energy
+variable ep equal c_reax[12] #Coulomb energy
+variable efi equal c_reax[13] #electric field energy (always 0.0)
+variable eqeq equal c_reax[14] #charge equilibration energy
+
+#出力ファイル
+#dump 1 all cfg    ${dNcfg}   *.cfge #mass xs ys zs mol fx fy fz
+#dump_modify 1 element H O
+dump 2 all atom ${dNcfg}   dump.daam
+fix group_potential_CW all print ${dNout} "${eb},${ea},${elp},${emol},${ev},${epen},${ecoa},${ehb},${et},${eco},${ew},${ep},${efi},${eqeq}"   screen no file reax_potential.csv
+fix engout all print ${dNout} "$(step) $(ke) $(pe)"                   screen no file energy.d
+fix strout all print ${dNout} "$(step) $(pxx) $(pyy) $(pzz)"          screen no file stress.d
+fix cllout all print ${dNout} "$(step) $(vol) $(lx) $(ly) $(lz)"   screen no file cell_for_aveCellsize.d
+
+#run pre-step(brefore output)
+run    ${N_pre_step}
+
+#run 1 step to get true neighbor binary data
+neigh_modify  delay 0  every 1  check no
+run    1
+
+write_data    CONFIG_3.DATA
+write_restart CONFIG_3.RESTART

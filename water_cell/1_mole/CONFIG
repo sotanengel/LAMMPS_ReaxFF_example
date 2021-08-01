@@ -1,0 +1,21 @@
+#LAMMPS initial data file
+
+#各種結合の設定
+3 atoms
+2 atom types
+
+#cell initial size
+0 10 xlo xhi
+0 10 ylo yhi
+0 10 zlo zhi
+
+Masses
+
+1 1.0 #H atom
+2 16.0 #O atom
+ 
+Atoms
+
+1 1 2 0.0 5 1 1 0 0 0
+2 1 1 0.0 5.76 1.59 1 0 0 0
+3 1 1 0.0 4.24 1.59 1 0 0 0
