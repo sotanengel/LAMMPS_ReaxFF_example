@@ -8,13 +8,13 @@ English ver → [Here!!](https://github.com/sotanengel/LAMMPS_ReaxFF_example/blo
 - [エタノール系(1000分子)](https://github.com/sotanengel/LAMMPS_ReaxFF_example/tree/main/ethanol_cell)
 - [水/エタノールの混合系(水1000分子+エタノール1分子)](https://github.com/sotanengel/LAMMPS_ReaxFF_example/tree/main/water_with_ethanol)
 
-また今回利用したReaxFFのポテンシャルは以下の論文で開発されたものを利用した。
-- [Improvement of the ReaxFF Description for Functionalized Hydrocarbon/Water Weak Interactions in the Condensed Phase](https://pubs.acs.org/doi/pdf/10.1021/acs.jpcb.8b01127)
-
-
 Water Cell             |  Ethanol Cell
 :-------------------------:|:-------------------------:
 ![image](https://user-images.githubusercontent.com/84895123/127760451-0f464b24-b200-4808-82eb-ce29e55561a9.png)  |  ![image](https://user-images.githubusercontent.com/84895123/127760458-292ab97e-0038-4478-9efe-4abdc369ea81.png)
+
+また今回利用したReaxFFのポテンシャルは以下の論文で開発されたものを利用した。
+- [Improvement of the ReaxFF Description for Functionalized Hydrocarbon/Water Weak Interactions in the Condensed Phase](https://pubs.acs.org/doi/pdf/10.1021/acs.jpcb.8b01127)
+
 
 # 実行方法
 ## 1.LAMMPSをダウンロードする
